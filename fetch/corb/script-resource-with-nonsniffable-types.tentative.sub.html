@@ -59,10 +59,17 @@ function test(mime_type, is_blocking_expected) {
 protected_mime_types = [
   "application/gzip",
   "application/pdf",
+  "application/pgp-encrypted",
+  "application/pgp-signature",
+  "application/pgp-keys",
+  "application/pkcs7-signature",
+  "application/pkcs7-mime",
   "application/x-gzip",
   "application/x-protobuf",
   "application/zip",
   "multipart/byteranges",
+  "multipart/encrypted",
+  "multipart/signed",
   "text/csv",
   "text/event-stream",
 ]
