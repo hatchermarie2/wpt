@@ -105,3 +105,31 @@ promise_test(async testCase => {
   assert_equals(cookie.name, 'cookie-name');
   assert_equals(cookie.value, 'cookie-value');
 }, 'cookieStore.get with matchType set to starts-with and missing name');
+
+promise_test(async testCase => {
+  await cookieStore.set('cookie-name', 'cookie-value');
+  testCase.add_cleanup(async () => {
+    await cookieStore.delete('cookie-name');
+  });
+
+  let target_url = self.location.href;
+  if (self.GLOBAL.isWorker()) {
+    target_url = target_url + '/path/within/scope';
+  }
+
+  const cookie = await cookieStore.get({ url: target_url });
+  assert_equals(cookie.name, 'cookie-name');
+  assert_equals(cookie.value, 'cookie-value');
+}, 'cookieStore.get with url in options');
+
+promise_test(async testCase => {
+  await cookieStore.set('cookie-name', 'cookie-value');
+  testCase.add_cleanup(async () => {
+    await cookieStore.delete('cookie-name');
+  });
+
+  const invalid_url =
+      `${self.location.protocol}//${self.location.host}/different/path`;
+  await promise_rejects(testCase, new TypeError(), cookieStore.get(
+      { url: invalid_url}));
+}, 'cookieStore.get with invalid url in options');
